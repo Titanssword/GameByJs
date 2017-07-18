@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>game 1</title>
+    <style media="screen">
+      canvas{
+        border: 1px black solid;
+      }
+    </style>
+  </head>
+
+  <body>
+    <canvas id="id-canvas" width="400" height="300"></canvas>
+
+    <script type="text/javascript">
+      var log = console.log.bind(console)
+      var imageFromPath = function(path) {
+        var img = new Image()
+        img.src = path
+        return img
+      }
+      var Paddle = function(){
+        var image = imageFromPath('paddle.jpg')
+        var o = {
+          image: image,
+          x: 100,
+          y: 200,
+          speed: 5,
+        }
+        o.moveLeft = function() {
+          o.x -= o.speed
+        }
+        o.moveRight = function(){
+          o.x += o.speed
+        }
+        o.collide = function(ball){
+          // if( o.y < ball.y && ball.x < o.x  && ball.x < o.x + o.image.height)
+          //   return 1
+          if(ball.y + ball.image.height > o.y){
+            if(ball.x > o.x && ball.x < o.x + o.image.width){
+              log("collide")
+              return true
+            }
+          }
+          return false
+        }
+        return o
+      }
+      var Ball = function(){
+        var image = imageFromPath('ball.jpg')
+        var o = {
+          image: image,
+          x: 100,
+          y: 200,
+          speedX: 10,
+          speedY: 10,
+          fired: false,
+        }
+        o.fire = function(){
+            log('fire')
+            o.fired = true
+        }
+        o.move = function(){
+          log('move ')
+          if(o.fired){
+            log("move")
+            if(o.x < 0 || o.x > 400){
+              o.speedX *= -1
+            }
+            if(o.y < 0 || o.y > 300){
+              o.speedY *= -1
+            }
+            o.x += o.speedX
+            o.y += o.speedY
+          }
+          log(o.x, o.y)
+          //log("move")
+        }
+        o.retan = function(){
+          o.speedY *= -1
+        }
+        return o
+      }
+      var Game = function(){
+        var g = {
+          actions: {
+
+          },
+          keydowns: {
+
+          },
+        }
+        var canvas = document.querySelector("#id-canvas")
+        var context = canvas.getContext('2d')
+        g.canvas = canvas
+        g.context = context
+        var paddle = Paddle()
+        //events
+
+        window.addEventListener('keydown',function(event){
+          //log('keydown')
+          g.keydowns[event.key] = true
+        })
+        window.addEventListener('keyup',function(event){
+          g.keydowns[event.key] = false
+        })
+
+        //zhuce
+        g.registerAction = function(key, callback){
+            g.actions[key] = callback
+        }
+
+        g.drawImage = function(paddle){
+            g.context.drawImage(paddle.image, paddle.x, paddle.y)
+        }
+        //time
+        setInterval(function(){
+          var actions = Object.keys(g.actions)
+          for( var i = 0; i < actions.length; i++){
+            var key  = actions[i]
+            if(g.keydowns[key]){
+              g.actions[key]()
+            }
+          }
+          g.update()
+          context.clearRect(0, 0, canvas.width, canvas.height)
+          g.draw()
+        },1000/30)
+        return g
+      }
+      var __main = function(){
+
+        // img.onload = function(){
+        //   context.drawImage(img, x, y)
+        // }
+        var leftDown = false
+        var rightDown = false
+        var paddle = Paddle()
+        //events
+        /*
+        window.addEventListener('keydown',function(event){
+          log('keydown')
+          var k = event.key
+          if(k == 'ArrowLeft'){
+              leftDown = true
+
+              // x -= 10
+              // context.clearRect(0, 0, canvas.width, canvas.height)
+              // context.drawImage(img, x, y)
+              // log(x)
+          }
+          else if(k == 'ArrowRight'){
+              rightDown = true
+              // x += 10
+              // context.clearRect(0, 0, canvas.width, canvas.height)
+              // context.drawImage(img, x, y)
+          }
+
+          //log(event)
+        })
+        window.addEventListener('keyup',function(event){
+          log('keyUp')
+          var k  = event.key
+          if(k == 'ArrowLeft'){
+            leftDown = false
+          }
+          else if(k == 'ArrowRight'){
+            rightDown = false
+          }
+        })
+        */
+        var game = Game()
+        var ball = Ball()
+        game.registerAction('a',function(){
+            paddle.moveLeft()
+        })
+        game.registerAction('d',function(){
+            paddle.moveRight()
+        })
+        game.registerAction('f',function(){
+            ball.fire()
+            //ball.move()
+            //log('ball move')
+        })
+        /*
+        game.update = function(){
+          if(leftDown){
+            //if(paddle.x - paddle.speed > 0 && paddle.x - paddle.speed <200){
+                paddle.moveLeft()
+            //}
+          }
+          else if(rightDown){
+            //if(paddle.x + paddle.speed > 0 && paddle.x + paddle.speed <200){
+                paddle.moveRight()
+          //  }
+          }
+        }
+        */
+        game.update = function(){
+          ball.move()
+          //判断碰撞
+          if(paddle.collide(ball)){
+              ball.retan()
+          }
+
+        }
+        game.draw = function(){
+          game.drawImage(paddle)
+          game.drawImage(ball)
+          //game.context.drawImage(paddle.image, paddle.x, paddle.y)
+        }
+      }
+      __main()
+    </script>
+  </body>
+</html>
