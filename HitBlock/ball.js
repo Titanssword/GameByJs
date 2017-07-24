@@ -18,6 +18,14 @@ var Ball = function(game){
       //log('fire')
       o.fired = true
   }
+  o.hasPoint = function(x, y){
+    if(x <= o.x + o.w && x >= o.x){
+      if(y <= o.y + o.h && y >= o.y){
+        return true
+      }
+    }
+    return false
+  }
   o.move = function(){
     //log('move ')
     if(o.fired){

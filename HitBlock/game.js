@@ -38,7 +38,7 @@ var Game = function(fps, images, callbackrun){
   //timer
   window.fps = 30
   var runloop = function(){
-    log(window.fps)
+    //log(window.fps)
     var actions = Object.keys(g.actions)
     for( var i = 0; i < actions.length; i++){
       var key  = actions[i]

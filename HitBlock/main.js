@@ -104,6 +104,33 @@ var __main = function(){
           }
       }
     }
+    var enableDrag = false
+    game.canvas.addEventListener('mousedown',function(event){
+      log(event)
+      var x = event.clientX
+      var y = event.clientY
+      if(ball.hasPoint(x, y)){
+        enableDrag = true
+      }
+    })
+    game.canvas.addEventListener('mousemove',function(event){
+      var x = event.offsetX
+      var y = event.offsetY
+      //log(event)
+      if(enableDrag){
+
+        ball.x = x
+        ball.y = y
+        log(x, y)
+
+      }
+
+    })
+    game.canvas.addEventListener('mouseup',function(event){
+      //var x = event.offsetX
+      log(event)
+      enableDrag = false
+    })
     game.draw = function(){
       game.drawImage(paddle)
       game.drawImage(ball)
@@ -120,6 +147,7 @@ var __main = function(){
       game.context.fillText('hello gamer your score is ' + score,10,50)
     }
   })
+
   enableDebugModel(game, true)
   // window.addEventListener('keydown', function(event){
   //     var key = event.key
