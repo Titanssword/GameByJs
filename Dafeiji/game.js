@@ -2,6 +2,7 @@ var Game = function(fps, images, callbackrun){
 
   // 预先载入图片
   var g = {
+      scene: null,
     actions: {
 
     },
@@ -26,7 +27,12 @@ var Game = function(fps, images, callbackrun){
   window.addEventListener('keyup',function(event){
     g.keydowns[event.key] = false
   })
-
+  g.update = function() {
+      g.scene.update()
+  }
+  g.draw = function() {
+      g.scene.draw()
+  }
   //zhuce
   g.registerAction = function(key, callback){
       g.actions[key] = callback
@@ -92,19 +98,11 @@ var Game = function(fps, images, callbackrun){
     },1000/window.fps)
   }
 
-  //time
-  // setInterval(function(){
-  //   //log(Object.keys(g.actions))
-  //   var actions = Object.keys(g.actions)
-  //   for( var i = 0; i < actions.length; i++){
-  //     var key  = actions[i]
-  //     if(g.keydowns[key]){
-  //       g.actions[key]()
-  //     }
-  //   }
-  //   g.update()
-  //   context.clearRect(0, 0, canvas.width, canvas.height)
-  //   g.draw()
-  // },1000/fps)
+  g.runWithScene = function() {
+      g.scene = scene
+      setTimeout(function(){
+          runloop()
+      },1000/fps)
+  }
   return g
 }

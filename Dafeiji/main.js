@@ -8,8 +8,8 @@ var __main = function(){
   var rightDown = false
   //var game = Game(30, images)
 
-  var game = Game.instance(30, images, function(g){
-      var s = new GSceneTitle(g)
+  var game = Game(30, images, function(g){
+      var s = Scene(game)
       g.runWithScene(s)
   })
 
